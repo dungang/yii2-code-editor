@@ -1,0 +1,23 @@
+{
+  "name": "dungang/yii2-codemirror",
+  "description": "代码编辑器支持预览",
+  "license": "MIT",
+  "minimum-stability": "dev",
+  "authors": [
+    {
+      "name": "dun gang",
+      "email": "dungang@126.com",
+      "homepage": "https://github.com/dungang",
+      "role": "Creator"
+    }
+  ],
+  "require": {
+    "php": ">=5.4.0",
+    "yiisoft/yii2": "~2.0.5"
+  },
+  "autoload": {
+    "psr-4": {
+      "dungang\\code\\editor\\": "src"
+    }
+  }
+}
