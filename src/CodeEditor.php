@@ -5,7 +5,7 @@
  * Time: 17:36
  */
 
-namespace dungang\codemirror;
+namespace dungang\code\editor;
 
 
 use yii\bootstrap\Html;

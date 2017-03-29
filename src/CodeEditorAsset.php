@@ -5,7 +5,7 @@
  * Time: 17:33
  */
 
-namespace dungang\codemirror;
+namespace dungang\code\editor;
 
 
 use yii\web\AssetBundle;
