@@ -7,24 +7,33 @@
 
 namespace dungang\code\editor;
 
-
-use yii\bootstrap\Html;
-use yii\bootstrap\InputWidget;
+use yii\helpers\Html;
+use yii\helpers\Json;
+use yii\widgets\InputWidget;
 
 class CodeEditor extends InputWidget
 {
-
+    public $language = 'php';
     public function run()
     {
+        $id = $this->options['id'];
+        $containerId = $id . '-container';
+        $previewId = $id . '-preview';
         $assets = CodeEditorAsset::register($this->getView());
-        $containerId = $this->id . '-container';
         $div = Html::tag('div','',['id'=>$containerId]);
-        $this->clientOptions['editorSWF'] = $assets->basePath . '/CodeHighlightEditor.swf';
-        $this->registerPlugin('codeEditor');
+        $options = [];
+        $options['swfTextAreaId'] = $id;
+        $options['previewButtonId'] = $previewId;
+        $options['parser'] = $this->language;
+        $options['swfContainerId'] = $containerId;
+        $options['swfEditorObject'] = $assets->baseUrl . '/CodeHighlightEditor.swf';
+        $options = Json::htmlEncode($options);
+        $this->getView()->registerJs("CodeEditor.create($options);");
+        $html = Html::button('预览',['id'=>$previewId]);
         if ($this->hasModel()) {
-            return Html::activeTextarea($this->model,$this->attribute,$this->options) . $div;
+            return $html . Html::activeTextarea($this->model,$this->attribute,$this->options) . $div;
         } else {
-            return Html::textarea($this->name,$this->value,$this->options) . $div;
+            return $html . Html::textarea($this->name,$this->value,$this->options) . $div;
         }
     }
 }
