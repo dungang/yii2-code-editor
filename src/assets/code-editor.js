@@ -84,7 +84,6 @@ var CodeEditor = (function(){
     CodeEditor.prototype.render = function () {
 
         var fl = this.checkFlash();
-        alert(fl.hasFlash);
         if (fl.hasFlash) {
             var flashVars = {
                 flashId:this.flashId,
