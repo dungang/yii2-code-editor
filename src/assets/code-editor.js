@@ -34,6 +34,32 @@ var CodeEditor = (function(){
         }
     }
 
+    CodeEditor.prototype.checkFlash = function () {
+        var hasFlash = 0;
+        var flashVersion = 0;
+        if (document.all) {
+            var swfObj = new ActiveXObject('ShockwaveFlash.ShockwaveFlash');
+            if (swfObj) {
+                hasFlash = 1;
+                var swfVar = swfObj.GetVariable("$version");
+                flashVersion = parseInt(swfVar.split(" ")[1].split(",")[0]);
+            }
+        } else {
+            if (navigator.plugins && navigator.plugins.length > 0) {
+                var swf = navigator.plugins["Shockwave Flash"];
+                if (swf) {
+                    hasFlash = 1;
+                    var words = swf.description.split(" ");
+                    for (var i = 0; i < words.length; ++i) {
+                        if (isNaN(parseInt(words[i]))) continue;
+                        flashVersion = parseInt(words[i]);
+                    }
+                }
+            }
+        }
+        return { hasFlash: hasFlash, version: flashVersion };
+    };
+
     CodeEditor.prototype.add = function(options){
         for(var prop in options) {
             if(this.hasOwnProperty(prop)) {
@@ -57,33 +83,50 @@ var CodeEditor = (function(){
 
     CodeEditor.prototype.render = function () {
 
-        var flashVars = {
-            flashId:this.flashId,
-            textareaId:this.swfTextAreaId,
-            parser: this.parser,
-            readOnly: this.readOnly,
-            preferredFonts : this.fonts,
-            fontSize : this.fontSize,
-            onload: "CodeEditor.load",
-            onchange: "CodeEditor.change"
-        };
-        var params = { menu: "false", /* wmode : "transparent", */allowscriptaccess : "always" };
-        swfobject.embedSWF(this.swfEditorObject+'?now=' + (new Date()).getTime(),
-            this.swfContainerId, this.width, this.height, this.swfVersion, null,
-            flashVars, params, {
-                id:this.flashId,
-                name:this.flashId
-            }
-        );
-
-        var _this = this;
-        var preview = document.getElementById(this.previewButtonId);
-        if (preview) {
-            preview.onclick=function (event) {
-                event.preventDefault();
-                _this.preview();
+        var fl = this.checkFlash();
+        alert(fl.hasFlash);
+        if (fl.hasFlash) {
+            var flashVars = {
+                flashId:this.flashId,
+                textareaId:this.swfTextAreaId,
+                parser: this.parser,
+                readOnly: this.readOnly,
+                preferredFonts : this.fonts,
+                fontSize : this.fontSize,
+                onload: "CodeEditor.load",
+                onchange: "CodeEditor.change"
             };
+            var params = { menu: "false", /* wmode : "transparent", */allowscriptaccess : "always" };
+            swfobject.embedSWF(this.swfEditorObject+'?now=' + (new Date()).getTime(),
+                this.swfContainerId, this.width, this.height, this.swfVersion, null,
+                flashVars, params, {
+                    id:this.flashId,
+                    name:this.flashId
+                }
+            );
+
+            var _this = this;
+            var preview = document.getElementById(this.previewButtonId);
+            if (preview) {
+                preview.onclick=function (event) {
+                    event.preventDefault();
+                    _this.preview();
+                };
+            }
+        } else {
+            var container = document.getElementById(this.swfContainerId);
+            container.style.borderWidth = '1px';
+            container.style.borderStyle = 'dash';
+            container.style.borderColor = 'lightgray';
+            container.style.padding = '10px';
+            container.style.backgroundColor = 'white';
+            container.style.color = 'orange';
+            container.style.textAlign='center';
+            container.style.fontWeight = 'bold';
+            container.innerHTML = 'Flash Player Not Installed, <a href="http://www.adobe.com/go/getflash" target="_blank">Click Here</a> To Install';
+
         }
+
         return this;
     };
 
