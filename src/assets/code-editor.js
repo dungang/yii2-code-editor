@@ -48,7 +48,7 @@ var CodeEditor = (function(){
     };
 
     CodeEditor.prototype.reload = function () {
-        CodeEditor.onLoad(this.flashId,this.swfTextAreaId);
+        CodeEditor.load(this.flashId,this.swfTextAreaId);
     };
 
     CodeEditor.prototype.render = function () {
