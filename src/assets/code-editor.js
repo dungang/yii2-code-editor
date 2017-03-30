@@ -27,6 +27,11 @@ var CodeEditor = (function(){
         this.add.apply(this,arguments);
 
         this.flashId = 'ctrFlash' + this.swfTextAreaId.replace('-','');
+
+        this._editorText = document.getElementById(this.swfTextAreaId);
+        if(this._editorText) {
+            this._editorText.style.display = 'none';
+        }
     }
 
     CodeEditor.prototype.add = function(options){
@@ -38,34 +43,19 @@ var CodeEditor = (function(){
     };
 
     CodeEditor.prototype.preview = function () {
-        var textArea = document.getElementById(this.swfTextAreaId)
         var left = (window.outerWidth -600)/2;
         var preview = open("", "code-editor-preview",
             "top=100,left="+left+",height=400,width=600,location=no,status=no,menubar=yes,toolbar=no");
         preview.document.open();
-        preview.document.write(textArea.value);
+        preview.document.write(this._editorText.value);
         preview.document.close();
     };
 
-    CodeEditor.prototype.reload = function () {
-        CodeEditor.load(this.flashId,this.swfTextAreaId);
+    CodeEditor.prototype.getEditorObject = function () {
+        return document.getElementById(this.flashId);
     };
 
     CodeEditor.prototype.render = function () {
-
-        var _this = this;
-        var textArea = document.getElementById(this.swfTextAreaId);
-        if(textArea) {
-            textArea.style.display = 'none';
-        }
-
-        var preview = document.getElementById(this.previewButtonId);
-        if (preview) {
-            preview.onclick=function (event) {
-                event.preventDefault();
-                _this.preview();
-            };
-        }
 
         var flashVars = {
             flashId:this.flashId,
@@ -84,7 +74,30 @@ var CodeEditor = (function(){
                 id:this.flashId,
                 name:this.flashId
             }
-        )
+        );
+
+        var _this = this;
+        var preview = document.getElementById(this.previewButtonId);
+        if (preview) {
+            preview.onclick=function (event) {
+                event.preventDefault();
+                _this.preview();
+            };
+        }
+        return this;
+    };
+
+    CodeEditor.prototype.changeParser = function (langauge) {
+        this.getEditorObject().setParser(langauge);
+    }
+
+    CodeEditor.prototype.setContent = function (code) {
+        this.getEditorObject().setText(code);
+        this._editorText.value = code;
+    };
+
+    CodeEditor.prototype.reload = function () {
+        this.getEditorObject().setText(this._editorText.value);
     };
 
     CodeEditor.create = function (options) {
@@ -92,12 +105,26 @@ var CodeEditor = (function(){
     };
 
     CodeEditor.load = function (swfId,textareaId) {
-        document.getElementById(swfId)
-            .setText(document.getElementById(textareaId).value);
+        var editorObj = document.getElementById(swfId);
+        var textarea = document.getElementById(textareaId);
+        editorObj.setText(textarea.value);
+        CodeEditor.onAfterLoaded.call(editorObj,textarea);
     };
 
     CodeEditor.change = function (textareaId,code) {
-        document.getElementById(textareaId).value = code;
+        var textarea = document.getElementById(textareaId);
+        textarea.value = code;
+        CodeEditor.onAfterChanged.call(textarea,code);
+    };
+
+    //callback
+    CodeEditor.onAfterLoaded = function (editorObj,textarea) {
+
+    };
+
+    //callback
+    CodeEditor.onAfterChanged = function (textarea,code) {
+
     };
 
     return CodeEditor;
