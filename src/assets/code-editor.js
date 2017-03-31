@@ -115,7 +115,7 @@ var CodeEditor = (function(){
         } else {
             var container = document.getElementById(this.swfContainerId);
             container.style.borderWidth = '1px';
-            container.style.borderStyle = 'dash';
+            container.style.borderStyle = 'dashed';
             container.style.borderColor = 'lightgray';
             container.style.padding = '10px';
             container.style.backgroundColor = 'white';
