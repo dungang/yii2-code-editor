@@ -2,7 +2,6 @@
   "name": "dungang/yii2-code-editor",
   "description": "CodeHighlightEditor.swf 封装,代码编辑器支持预览",
   "license": "MIT",
-  "minimum-stability": "dev",
   "authors": [
     {
       "name": "dun gang",
